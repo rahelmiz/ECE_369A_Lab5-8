@@ -5,7 +5,7 @@ pos1D:
  # a2 = col = col number in 2D array
 
     lw $s0, 4($a0) # s0 = asize_[1]
-    mul $s1, $a1, $$s0  # s1 = row * width
+    mul $s1, $a1, $s0  # s1 = row * width
     add $v0, $s1, $a2 # v0 = (row * width) + col
     jr $ra
 
