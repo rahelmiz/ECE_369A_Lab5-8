@@ -1,0 +1,62 @@
+vbsme:  
+    li      $v0, 0              # reset $v0 and $V1
+    li      $v1, 0
+
+    # insert your code here
+   
+    
+    #int SAD(int positionI, int positionJ, int arr[5][5], int rowsW, int colsW, int window[2][2]) {
+	#int total = 0;
+	#//take pairwise pixel differences
+	#//take absolute value of each difference
+	#//accumulate all
+	#for (int i = 0; i < rowsW; ++i) {
+	#	for (int j = 0; j < colsW; ++j) {
+	#		total = total + abs(arr[i + positionI][j + positionJ] - window[i][j]);
+	#	}
+	#}
+	#//best match is the one that is closest to zero
+	#return total;
+
+    #change all $a, set to an $s that is reset to $a each loop
+    SAD:
+        #set an i and total value
+        add $t0, $zero, $zero #i
+        add $t2, $zero, $zero #total
+
+        #set up loops for i and j
+      goThruRow:
+        #set j to 0 
+        add $t1, $zero, $zero #j
+       goThruCol:
+        #ask for 1D array position for the window                   FIXME
+        add $a1, $t0, $zero
+        add $a2, $t1, $zero
+        j pos1D #returns value in $v0 for window
+        add $t8, $v0, $zero
+        #need to change i and j by positionI and positionJ value        FIXME
+        add $a1, $t0, 
+        add $a2, $t1, 
+        j pos1D #returns value in $v0 for field
+        #subtract field from window
+        sub $t3, $v0, $t8
+        #take absolute value of $t3
+        ori $t4, $zero, $t3     #copy t3 into $t4, could also just use add? idk whats better
+        slt $t5, $t3, $zero     #see if t3 is negative
+        beq $t5, $zero, skipabs    #if it is positive we skip swapping them
+        sub $t4, $zero, $t3     #set t4 to the -t3 value
+        skipabs:
+        #add the absolute value to the total
+        add $t2, $t2, $t4
+        #increment j
+        addi $t1, $t1, 1
+        #need to know what rowsW and colsW are for register values, temp using rowsW = $s0, colsW = $s1      FIXME
+        slt $t6, $t1, $s1 #is j less than colsW
+        bne $t6, $zero, goThruCol #loop thru j until all the cols are checked
+        addi $t0, $t0, 1 #increment i
+        slt $t6, $t0, $s0 #is i less than rowsW
+        bne $t6, $zero, goThruRow #loop thru i until all the rows are checked
+        #done with loops, returns v1 as the total value 
+        add $v1, $t2, $zero
+        jr $ra
+}
